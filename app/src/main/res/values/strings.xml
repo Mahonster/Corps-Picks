@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Corps Picks</string>
+    <string name="placeholder_text">Placeholder Text</string>
+    <string name="score_label">Score: </string>
+    <string name="place_label">Place: </string>
+    <string name="handle_description">Drag</string>
+
+    <string-array name="test_finalists">
+        <item>Bluecoats</item>
+        <item>Blue Devils</item>
+        <item>Carolina Crown</item>
+        <item>Santa Clara Vanguard</item>
+        <item>The Cavaliers</item>
+        <item>The Cadets</item>
+        <item>Blue Knights</item>
+        <item>Phantom Regiment</item>
+        <item>Blue Stars</item>
+        <item>Crossmen</item>
+        <item>The Academy</item>
+        <item>Boston Crusaders</item>
+    </string-array>
+
+    <string-array name="test_finalists_scores">
+        <item>97.650</item>
+        <item>97.250</item>
+        <item>97.088</item>
+        <item>95.300</item>
+        <item>94.025</item>
+        <item>92.763</item>
+        <item>90.738</item>
+        <item>89.963</item>
+        <item>89.050</item>
+        <item>86.975</item>
+        <item>86.100</item>
+        <item>84.800</item>
+    </string-array>
+
+</resources>
