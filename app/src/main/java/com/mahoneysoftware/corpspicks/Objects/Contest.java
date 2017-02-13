@@ -2,7 +2,6 @@ package com.mahoneysoftware.corpspicks.Objects;
 
 import android.util.SparseArray;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -11,10 +10,13 @@ import java.util.Date;
  */
 
 public class Contest {
-    private String id = "";
+    private int id = -1;
     private String name = "";
     private String location = "";
-    private Date date;
+    private Date dateObject;
+    private String dateLabel = "";
+    private String date = "";
+    private String time = "";
     private SparseArray<Corps> lineup;
 
     public Contest() {
@@ -31,8 +33,24 @@ public class Contest {
 
     public Contest(String name, Date date, String location) {
         this.name = name;
-        this.date = date;
+        this.dateObject = date;
         this.location = location;
+    }
+
+    public String getDateLabel() {
+        return dateLabel;
+    }
+
+    public void setDateLabel(String dateLabel) {
+        this.dateLabel = dateLabel;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getName() {
@@ -43,20 +61,28 @@ public class Contest {
         this.name = name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    public Date getDateObject() {
+        return dateObject;
+    }
+
+    public void setDateObject(Date dateObject) {
+        this.dateObject = dateObject;
     }
 
     public SparseArray<Corps> getLineup() {

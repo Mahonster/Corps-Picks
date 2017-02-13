@@ -3,39 +3,36 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingStart="16dp"
+    android:paddingRight="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <TextView
-        android:id="@+id/contest_list_item_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sunday, June 25, 2017"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        />
-
-    <HorizontalScrollView
-        android:id="@+id/contest_list_item_scroll_view"
+        android:id="@+id/contest_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:clipToPadding="false">
+        android:text="DCI Tour Premiere presented by DeMoulin Bros. and Co."
+        android:layout_marginBottom="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="?android:attr/textColorPrimary" />
 
-        <LinearLayout
-            android:id="@+id/contest_list_item_scroll_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/contest_item_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="agagsg 31 jul"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
-        </LinearLayout>
-
-    </HorizontalScrollView>
+    <TextView
+        android:id="@+id/contest_item_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Indianapolis, IN - 8:30 p.m. (ET)"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
 </LinearLayout>

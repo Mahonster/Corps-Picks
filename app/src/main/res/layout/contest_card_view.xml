@@ -1,89 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
-    android:layout_height="260dp"
-    android:elevation="3dp"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_height="200dp"
     android:layout_marginBottom="8dp"
-    android:layout_marginTop="8dp">
+    android:layout_marginLeft="14dp"
+    android:layout_marginStart="14dp"
+    android:layout_marginTop="8dp"
+    android:elevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <TextView
+            android:id="@+id/contest_card_title"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:src="@drawable/scv"
-            android:scaleType="centerCrop"
-            />
+            android:layout_height="wrap_content"
+            android:text="DCI Tour Premiere presented by DeMoulin Bros. and Co."
+            android:layout_marginBottom="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="?android:attr/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/contest_card_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Indianapolis, IN - 8:30 p.m. (ET)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phantom Regiment, Bluecoats, Cadets, Carolina Crown, Cavaliers, Boston Crusaders"
+            android:maxLines="3"
+            android:ellipsize="end" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
+            android:orientation="horizontal"
+            android:gravity="bottom|right">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1">
+                android:minHeight="30dp"
+                android:text="View Details" />
 
-                <TextView
-                    android:id="@+id/contest_card_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="DCI West"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="12dp"/>
-
-                <TextView
-                    android:id="@+id/contest_card_location"
-                    android:layout_marginTop="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Stanford, CA"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/contest_card_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="right|center_vertical"
-                android:layout_weight="1">
-
-                <Button
-                    android:minHeight="30dp"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="View Details"/>
-
-                <Button
-                    android:id="@+id/contest_card_button"
-                    android:minHeight="30dp"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See Predictions"/>
-
-            </LinearLayout>
-
-
+                android:minHeight="30dp"
+                android:text="See Predictions" />
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 
