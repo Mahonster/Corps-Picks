@@ -34,5 +34,6 @@
         <item>86.100</item>
         <item>84.800</item>
     </string-array>
+    <string name="title_activity_login">LoginActivity</string>
 
 </resources>
