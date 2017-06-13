@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
 
         mDatabase = FirebaseDatabase.getInstance();
         mDatabase.setPersistenceEnabled(true);
-        eventsDatabase = mDatabase.getReference("events");
+        eventsDatabase = mDatabase.getReference("2017").child("v1").child("events");
 
         Query query = eventsDatabase.orderByChild("date");
 

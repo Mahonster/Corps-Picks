@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    
+
     <include layout="@layout/toolbar"/>
 
     <android.support.v7.widget.RecyclerView
@@ -15,5 +15,12 @@
         android:id="@+id/pick_list_view"
         android:paddingBottom="8dp"
         android:clipToPadding="false" />
+
+    <ProgressBar
+        android:id="@+id/pickProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

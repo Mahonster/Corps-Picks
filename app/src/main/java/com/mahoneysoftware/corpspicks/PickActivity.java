@@ -38,7 +38,7 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
         setTitle(extras.getString("contest_title"));
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("lineups").child("" + contestId);
+        DatabaseReference reference = database.getReference("2017").child("v1").child("lineups").child("" + contestId);
 
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
