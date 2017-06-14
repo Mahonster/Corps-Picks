@@ -25,6 +25,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         TextView title;
         TextView date;
         TextView location;
+        TextView complete;
 
 
         ViewHolder(View v) {
@@ -33,6 +34,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
             title = (TextView) v.findViewById(R.id.contest_item_title);
             date = (TextView) v.findViewById(R.id.contest_item_date);
             location = (TextView) v.findViewById(R.id.contest_item_location);
+            complete = (TextView) v.findViewById(R.id.contest_item_complete);
         }
     }
 
@@ -67,6 +69,9 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         holder.title.setText(contest.getName());
         holder.date.setText(dateText + " - " + contest.getTime());
         holder.location.setText(contest.getLocation());
+        Boolean isComplete = contest.isComplete();
+        if(isComplete)
+            holder.complete.setText("Contest Finished! Click to view results.");
     }
 
     @Override

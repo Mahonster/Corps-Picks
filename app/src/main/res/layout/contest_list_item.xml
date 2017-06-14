@@ -35,4 +35,10 @@
         android:text="Indianapolis, IN - 8:30 p.m. (ET)"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Complete"
+        android:id="@+id/contest_item_complete"/>
+
 </LinearLayout>
