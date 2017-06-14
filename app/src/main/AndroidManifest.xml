@@ -11,7 +11,7 @@
         <activity android:name=".PickActivity" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".SplashActivity"

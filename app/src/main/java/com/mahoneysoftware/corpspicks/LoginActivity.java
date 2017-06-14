@@ -1,5 +1,6 @@
 package com.mahoneysoftware.corpspicks;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +33,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth.AuthStateListener mAuthListener;
     private GoogleApiClient mGoogleApiClient;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mAuth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("867542715344-1hajkr85ugs8hpulli83f6tmct4ntsvd.apps.googleusercontent.com")
+                .requestIdToken("867542715344-srha7e2k1o46vmhr40r4c70s8a5rbecg.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -93,8 +96,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             if(result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
+                progressDialog = ProgressDialog.show(LoginActivity.this, "Loading", "Please Wait", true);
             } else {
-                Toast.makeText(this, "Google Couldn't Get Authentication", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -108,6 +112,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
                             //Sign in success - continue
+                            progressDialog.dismiss();
                             Toast.makeText(LoginActivity.this, "Sign In Successful!", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
