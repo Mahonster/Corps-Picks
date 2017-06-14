@@ -19,6 +19,16 @@ public class Contest {
     private String time = "";
     private SparseArray<Corps> lineup;
 
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
+
+    private boolean isComplete = false;
+
     public Contest() {
 
     }
