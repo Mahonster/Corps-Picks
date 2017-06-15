@@ -69,8 +69,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         holder.title.setText(contest.getName());
         holder.date.setText(dateText + " - " + contest.getTime());
         holder.location.setText(contest.getLocation());
-        Boolean isComplete = contest.isComplete();
-        if(isComplete)
+        String isComplete = contest.isComplete();
+        if (isComplete.equals("true"))
             holder.complete.setText("Contest Finished! Click to view results.");
     }
 

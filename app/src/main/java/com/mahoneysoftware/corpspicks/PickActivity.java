@@ -7,8 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PickActivity extends AppCompatActivity implements PickListAdapter.OnStartDragListener {
@@ -25,6 +32,9 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
     private int contestId;
     private String[] dataSet;
     private String[] scores;
+    DatabaseReference mainReference;
+    private FirebaseUser user;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,30 +47,15 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
         contestId = extras.getInt("contest_id");
         setTitle(extras.getString("contest_title"));
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        }
+
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("2017").child("v1").child("lineups").child("" + contestId);
+        mainReference = database.getReference("2017").child("v1");
 
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
-                };
-                List<String> list = dataSnapshot.getValue(t);
-                Log.d("LOOK MOM", "" + dataSnapshot.getChildrenCount());
-                dataSet = new String[list.size()];
-                scores = new String[list.size()];
-                for (int i = 0; i < list.size(); i++) {
-                    dataSet[i] = list.get(i);
-                    scores[i] = "99.65";
-                }
-                attachAdapter();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        checkForExistingPicks();
 
         recyclerView = (RecyclerView) findViewById(R.id.pick_list_view);
         recyclerView.setHasFixedSize(true); //for performance: if content size doesn't change.
@@ -104,6 +99,31 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
         touchHelper.attachToRecyclerView(recyclerView);
     }
 
+    public void finishPick() {
+
+        if (user != null) {
+
+            DatabaseReference pickReference = mainReference.child("picks").child("" + contestId).child(userId);
+            DatabaseReference nameReference = pickReference.child("name");
+            DatabaseReference scoreReference = pickReference.child("score");
+            DatabaseReference metaDatareference = pickReference.child("metadata");
+
+            List<String> names = new ArrayList<>(Arrays.asList(dataSet));
+            List<String> scoresList = new ArrayList<>(Arrays.asList(scores));
+
+            nameReference.setValue(names, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    Toast.makeText(PickActivity.this, "Prediction Made!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            scoreReference.setValue(scoresList);
+            metaDatareference.child("placementOnly").setValue(true);
+        } else {
+            Toast.makeText(this, "Authentication Error.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         touchHelper.startDrag(viewHolder);
@@ -112,5 +132,84 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
     private void attachAdapter() {
         adapter = new PickListAdapter(dataSet, scores, this);
         recyclerView.setAdapter(adapter);
+    }
+
+    private void checkForExistingPicks() {
+        DatabaseReference pickReference = mainReference.child("picks").child("" + contestId).child(userId);
+
+        pickReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.getChildren().iterator().hasNext()) {
+                    setupData(false);
+                } else { // Load data from previous prediction if it exists
+                    GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
+                    };
+                    List<String> corps = dataSnapshot.child("name").getValue(t);
+                    dataSet = new String[corps.size()];
+                    scores = new String[corps.size()];
+                    for (int i = 0; i < corps.size(); i++) {
+                        dataSet[i] = corps.get(i);
+                        scores[i] = "99.65";
+                    }
+                    setupData(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setupData(final Boolean predictionMade) {
+
+        if (!predictionMade) {
+            DatabaseReference reference = mainReference.child("lineups").child("" + contestId);
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (!predictionMade) {
+                        GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
+                        };
+                        List<String> list = dataSnapshot.getValue(t);
+                        Log.d("LOOK MOM", "" + dataSnapshot.getChildrenCount());
+                        dataSet = new String[list.size()];
+                        scores = new String[list.size()];
+                        for (int i = 0; i < list.size(); i++) {
+                            dataSet[i] = list.get(i);
+                            scores[i] = "99.65";
+                        }
+                    } else {
+                        //Probably check for validity of previous prediction here
+                    }
+
+                    attachAdapter();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            attachAdapter(); //If a prediction was made, it's loaded, attach adapter.
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.pick_menu_done) {
+            finishPick();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.pick_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

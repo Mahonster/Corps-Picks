@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Contest contest = child.getValue(Contest.class);
                     contest.setId(Integer.parseInt(child.getKey()));
+
+                    if (child.child("isComplete").getValue() != null)
+                        contest.setComplete((String) child.child("isComplete").getValue());
                     try {
                         contest.setDateObject(df.parse(contest.getDate()));
                     } catch (ParseException e) {

@@ -18,14 +18,14 @@ public class Contest {
     private String date = "";
     private String time = "";
     private SparseArray<Corps> lineup;
-    private boolean isComplete = false;
+    private String complete = "false";
 
-    public boolean isComplete() {
-        return isComplete;
+    public String isComplete() {
+        return complete;
     }
 
-    public void setComplete(boolean complete) {
-        isComplete = complete;
+    public void setComplete(String complete) {
+        this.complete = complete;
     }
 
 
