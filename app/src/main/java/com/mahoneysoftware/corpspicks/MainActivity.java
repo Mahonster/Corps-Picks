@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Random;
 
 /**
  * Created by Dylan on 1/15/2017.
@@ -29,13 +31,16 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements MainRecyclerAdapter.ContestsAdapterInterface {
 
+    private String userId;
+
     private FirebaseDatabase mDatabase;
-    private DatabaseReference eventsDatabase;
+    private DatabaseReference mainReference;
 
     private RecyclerView recyclerView;
     private MainRecyclerAdapter adapter;
 
     private ArrayList<Contest> contests;
+    private SparseArray<Contest> contestMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,17 +50,53 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
         setSupportActionBar(toolbar);
 
         contests = new ArrayList<>();
+        contestMap = new SparseArray<>();
 
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, 6, 2);
-        final Random rand = new Random();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null)
+            userId = user.getUid();
 
         mDatabase = FirebaseDatabase.getInstance();
         mDatabase.setPersistenceEnabled(true);
-        eventsDatabase = mDatabase.getReference("2017").child("v1").child("events");
+        mainReference = mDatabase.getReference("2017").child("v1");
 
-        Query query = eventsDatabase.orderByChild("date");
+        queryEventsList();
 
+        recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
+        recyclerView.setHasFixedSize(false);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void queryEventsPredicted() {
+        Query predictedQuery = mainReference.child("users").child(userId).child("predicted");
+
+        predictedQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    int id = Integer.parseInt(child.getKey());
+                    int index = contests.indexOf(contestMap.get(id));
+                    Contest contest = contests.get(index);
+                    contest.setContestPredicted(true);
+                    contests.set(index, contest);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void queryEventsList() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(2017, 6, 2);
+
+        Query query = mainReference.child("events").orderByChild("date");
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -65,7 +106,8 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     Contest contest = child.getValue(Contest.class);
-                    contest.setId(Integer.parseInt(child.getKey()));
+                    int id = Integer.parseInt(child.getKey());
+                    contest.setId(id);
 
                     if (child.child("isComplete").getValue() != null)
                         contest.setComplete((String) child.child("isComplete").getValue());
@@ -76,7 +118,9 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
                         contest.setDateObject(calendar.getTime());
                     }
                     contests.add(contest);
+                    contestMap.append(id, contest);
                 }
+                queryEventsPredicted();
                 attachAdapter();
             }
 
@@ -85,33 +129,6 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
 
             }
         });
-
-
-//        Contest[] contests = new Contest[6];
-//
-//
-//
-//        contests[0] = new Contest("DCI West", calendar.getTime(), "Stanford, California");
-//
-//        calendar.clear();
-//        calendar.set(2017, 6, 5);
-//
-//        contests[1] = new Contest("DCI Less West", calendar.getTime(), "Stillwater, Oklahoma");
-//        contests[2] = new Contest("DCI South", calendar.getTime(), "Austin, Texas");
-//        calendar.set(2017, 6, 8);
-//        contests[3] = new Contest("DCI Faker", calendar.getTime(), "Nowhere");
-//        calendar.set(2017, 6, 9);
-//        contests[4] = new Contest("DCI Npe", calendar.getTime(), "Somewhere");
-//        calendar.set(2017, 7, 10);
-//        contests[5] = new Contest("DCI Finals", calendar.getTime(), "Indianapolis");
-
-        recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
-        recyclerView.setHasFixedSize(false);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-
     }
 
     private void attachAdapter() {

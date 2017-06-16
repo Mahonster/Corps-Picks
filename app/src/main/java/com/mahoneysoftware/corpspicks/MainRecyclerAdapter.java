@@ -26,7 +26,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         TextView date;
         TextView location;
         TextView complete;
-
+        TextView predicted;
 
         ViewHolder(View v) {
             super(v);
@@ -35,6 +35,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
             date = (TextView) v.findViewById(R.id.contest_item_date);
             location = (TextView) v.findViewById(R.id.contest_item_location);
             complete = (TextView) v.findViewById(R.id.contest_item_complete);
+            predicted = (TextView) v.findViewById(R.id.contest_item_predicted);
         }
     }
 
@@ -72,6 +73,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         String isComplete = contest.isComplete();
         if (isComplete.equals("true"))
             holder.complete.setText("Contest Finished! Click to view results.");
+        if (contest.isContestPredicted())
+            holder.predicted.setText("Prediction Made");
     }
 
     @Override

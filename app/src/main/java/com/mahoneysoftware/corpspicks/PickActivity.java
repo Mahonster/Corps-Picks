@@ -23,7 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PickActivity extends AppCompatActivity implements PickListAdapter.OnStartDragListener {
     private RecyclerView.Adapter adapter;
@@ -42,6 +44,14 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
         setContentView(R.layout.activity_pick);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         Bundle extras = getIntent().getExtras();
         contestId = extras.getInt("contest_id");
@@ -99,26 +109,24 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
         touchHelper.attachToRecyclerView(recyclerView);
     }
 
-    public void finishPick() {
+    public void submitPick() {
 
         if (user != null) {
-
-            DatabaseReference pickReference = mainReference.child("picks").child("" + contestId).child(userId);
-            DatabaseReference nameReference = pickReference.child("name");
-            DatabaseReference scoreReference = pickReference.child("score");
-            DatabaseReference metaDatareference = pickReference.child("metadata");
-
             List<String> names = new ArrayList<>(Arrays.asList(dataSet));
             List<String> scoresList = new ArrayList<>(Arrays.asList(scores));
 
-            nameReference.setValue(names, new DatabaseReference.CompletionListener() {
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/picks/" + contestId + "/" + userId + "/name", names);
+            childUpdates.put("/picks/" + contestId + "/" + userId + "/score", scoresList);
+            childUpdates.put("picks/" + contestId + "/" + userId + "/metadata/placementOnly", true);
+            childUpdates.put("/users/" + userId + "/predicted/" + contestId, true);
+
+            mainReference.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     Toast.makeText(PickActivity.this, "Prediction Made!", Toast.LENGTH_SHORT).show();
                 }
             });
-            scoreReference.setValue(scoresList);
-            metaDatareference.child("placementOnly").setValue(true);
         } else {
             Toast.makeText(this, "Authentication Error.", Toast.LENGTH_SHORT).show();
         }
@@ -163,6 +171,7 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
         });
     }
 
+    //TODO needs to be optimized
     public void setupData(final Boolean predictionMade) {
 
         if (!predictionMade) {
@@ -202,7 +211,7 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.pick_menu_done) {
-            finishPick();
+            submitPick();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -35,9 +35,29 @@
         android:text="Indianapolis, IN - 8:30 p.m. (ET)"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/contest_item_complete"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/contest_item_complete"
+            android:text="Contest Finished!" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/contest_item_predicted"
+            android:text="" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

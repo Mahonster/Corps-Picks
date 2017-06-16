@@ -19,6 +19,7 @@ public class Contest {
     private String time = "";
     private SparseArray<Corps> lineup;
     private String complete = "false";
+    private boolean contestPredicted = false;
 
     public String isComplete() {
         return complete;
@@ -46,6 +47,14 @@ public class Contest {
         this.name = name;
         this.dateObject = date;
         this.location = location;
+    }
+
+    public boolean isContestPredicted() {
+        return contestPredicted;
+    }
+
+    public void setContestPredicted(boolean contestPredicted) {
+        this.contestPredicted = contestPredicted;
     }
 
     public String getDateLabel() {
