@@ -124,12 +124,13 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
             mainReference.updateChildren(childUpdates, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    Toast.makeText(PickActivity.this, "Prediction Made!", Toast.LENGTH_SHORT).show();
+
                 }
             });
         } else {
             Toast.makeText(this, "Authentication Error.", Toast.LENGTH_SHORT).show();
         }
+        Toast.makeText(PickActivity.this, "Prediction Submitted!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

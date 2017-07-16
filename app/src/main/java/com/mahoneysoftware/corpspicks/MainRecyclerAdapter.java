@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.mahoneysoftware.corpspicks.Objects.Contest;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Dylan on 1/15/2017.
@@ -19,6 +20,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     private Context context;
     private ArrayList<Contest> contests;
     public final ContestsAdapterInterface contestsAdapterInterface;
+    private Random rand;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View view;
@@ -27,6 +29,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         TextView location;
         TextView complete;
         TextView predicted;
+        //ImageView background;
 
         ViewHolder(View v) {
             super(v);
@@ -36,6 +39,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
             location = (TextView) v.findViewById(R.id.contest_item_location);
             complete = (TextView) v.findViewById(R.id.contest_item_complete);
             predicted = (TextView) v.findViewById(R.id.contest_item_predicted);
+            //background = (ImageView) v.findViewById(R.id.contest_item_picture);
         }
     }
 
@@ -43,7 +47,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         this.contests = contests;
         this.context = context;
 //        groupedContests = getGroupedContestsByDate();
-        this.contestsAdapterInterface = (ContestsAdapterInterface) context;
+        this.contestsAdapterInterface = contestsAdapterInterface;
+        rand = new Random();
     }
 
     @Override
@@ -54,7 +59,14 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         viewHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contestsAdapterInterface.startContestPick(contests.get(viewHolder.getAdapterPosition()));
+                //When clicked, check if contest is complete or not, if so, launch results activity.
+                Contest contest = contests.get(viewHolder.getAdapterPosition());
+
+                if (contest.isComplete().equals("true")) {
+                    contestsAdapterInterface.startContestResults(contest);
+                } else {
+                    contestsAdapterInterface.startContestPick(contest);
+                }
             }
         });
 
@@ -67,15 +79,21 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         Contest contest = contests.get(position);
         String dateText;
         dateText = (String) android.text.format.DateFormat.format("EEEE, MMMM d", contests.get(position).getDateObject());
+        //holder.background.setImageResource(contest.getImageResourceId());
         holder.title.setText(contest.getName());
         holder.date.setText(dateText + " - " + contest.getTime());
         holder.location.setText(contest.getLocation());
         String isComplete = contest.isComplete();
         if (isComplete.equals("true"))
             holder.complete.setText("Contest Finished! Click to view results.");
+        else
+            holder.complete.setText("");
         if (contest.isContestPredicted())
             holder.predicted.setText("Prediction Made");
+        else
+            holder.predicted.setText("");
     }
+
 
     @Override
     public int getItemCount() {
@@ -109,5 +127,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     interface ContestsAdapterInterface {
         void startContestPick(Contest contest);
+
+        void startContestResults(Contest contest);
     }
 }

@@ -20,6 +20,18 @@ public class Contest {
     private SparseArray<Corps> lineup;
     private String complete = "false";
     private boolean contestPredicted = false;
+    private String image = "";
+    private int imageResourceId;
+
+    public Contest() {
+
+    }
+
+    public Contest(String name, Date date, String location) {
+        this.name = name;
+        this.dateObject = date;
+        this.location = location;
+    }
 
     public String isComplete() {
         return complete;
@@ -27,12 +39,6 @@ public class Contest {
 
     public void setComplete(String complete) {
         this.complete = complete;
-    }
-
-
-
-    public Contest() {
-
     }
 
     public String getLocation() {
@@ -43,10 +49,20 @@ public class Contest {
         this.location = location;
     }
 
-    public Contest(String name, Date date, String location) {
-        this.name = name;
-        this.dateObject = date;
-        this.location = location;
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public int getImageResourceId() {
+        return imageResourceId;
+    }
+
+    public void setImageResourceId(int imageResourceId) {
+        this.imageResourceId = imageResourceId;
     }
 
     public boolean isContestPredicted() {
