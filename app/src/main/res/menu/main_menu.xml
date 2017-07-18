@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:title="Settings"
-        android:id="@+id/main_menu_settings" />
+    <!--<item-->
+    <!--android:title="Settings"-->
+    <!--android:id="@+id/main_menu_settings" />-->
 
     <item
         android:title="Sign Out"
         android:id="@+id/main_menu_sign_out" />
 
-    <item
-        android:title="Bottom Nav"
-        android:id="@+id/main_menu_bottom" />
+    <!--<item-->
+    <!--android:title="Bottom Nav"-->
+    <!--android:id="@+id/main_menu_bottom" />-->
 </menu>

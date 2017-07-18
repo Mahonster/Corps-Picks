@@ -2,14 +2,15 @@ package com.mahoneysoftware.corpspicks;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
     private RecyclerView recyclerView;
     private MainRecyclerAdapter adapter;
 
+    private SwipeRefreshLayout refreshLayout;
+
     private ArrayList<Contest> contests;
 
     private Random rand;
@@ -73,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
         if (user != null)
             userId = user.getUid();
 
-        queryEventsList();
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_activity_swipe_layout);
+        setRefreshListener();
 
         recyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -83,9 +87,64 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new MainRecyclerAdapter(contests, getApplicationContext(), this);
+        recyclerView.setAdapter(adapter);
+
+        queryEventsList();
     }
 
-    private void queryEventsPredicted() {
+    private void queryEventsList() {
+        refreshLayout.setRefreshing(true);
+        updateEventsList();
+    }
+
+    void updateEventsList() {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(2017, 6, 2);
+
+        DatabaseReference eventsRef = mainReference.child("events");
+        eventsRef.keepSynced(true);
+
+        final Query query = mainReference.child("events").orderByChild("date");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                DateFormat df = new SimpleDateFormat("yyMMdd", Locale.US);
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Contest contest = child.getValue(Contest.class);
+                    int id = Integer.parseInt(child.getKey());
+                    contest.setId(id);
+                    //contest.setImageResourceId(getContestImage(contest));
+
+                    boolean isLocked = (boolean) child.child("isLocked").getValue();
+                    contest.setLocked(isLocked);
+
+                    String isComplete = (String) child.child("isComplete").getValue();
+                    if (isComplete != null) {
+                        contest.setComplete(isComplete);
+                    }
+                    try {
+                        contest.setDateObject(df.parse(contest.getDate()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        contest.setDateObject(calendar.getTime());
+                    }
+                    contests.add(contest);
+                }
+                updateEventsPredicted();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void updateEventsPredicted() {
         Query predictedQuery = mainReference.child("users").child(userId).child("predicted");
 
         predictedQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -100,49 +159,7 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
                         }
                     }
                 }
-                if (recyclerView.getAdapter() != null)
-                    adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void queryEventsList() {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(2017, 6, 2);
-
-        final Query query = mainReference.child("events").orderByChild("date");
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                DateFormat df = new SimpleDateFormat("yyMMdd", Locale.US);
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Contest contest = child.getValue(Contest.class);
-                    int id = Integer.parseInt(child.getKey());
-                    contest.setId(id);
-                    Log.d("TAG", contest.getName());
-
-                    //contest.setImageResourceId(getContestImage(contest));
-
-                    if (child.child("isComplete").getValue() != null)
-                        contest.setComplete((String) child.child("isComplete").getValue());
-                    try {
-                        contest.setDateObject(df.parse(contest.getDate()));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        contest.setDateObject(calendar.getTime());
-                    }
-                    contests.add(contest);
-                }
-                attachAdapter();
-                queryEventsPredicted();
+                onItemsLoadComplete();
             }
 
             @Override
@@ -164,13 +181,27 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
     @Override
     protected void onStart() {
         super.onStart();
-        queryEventsPredicted();
+        updateEventsPredicted();
     }
 
-    private void attachAdapter() {
-        adapter = new MainRecyclerAdapter(contests, this, this);
+    private void setRefreshListener() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
+    }
 
-        recyclerView.setAdapter(adapter);
+    private void refreshItems() {
+        contests.clear();
+        adapter.notifyDataSetChanged();
+        updateEventsList();
+    }
+
+    private void onItemsLoadComplete() {
+        refreshLayout.setRefreshing(false);
+        adapter.notifyDataSetChanged();
     }
 
     //Very rudimentary method to sign out
@@ -188,6 +219,10 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
         intent.putExtra("contest_title", contest.getName());
         intent.putExtra("contest_id", contest.getId());
         startActivity(intent);
+    }
+
+    public void startContestLineup(Contest contest) {
+        Toast.makeText(this, "This event is currently in progress or scores have not been updated yet.", Toast.LENGTH_LONG).show();
     }
 
     public void startContestResults(Contest contest) {
@@ -211,14 +246,14 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.main_menu_settings) {
+//        if (id == R.id.main_menu_settings)
 
-        } else if (id == R.id.main_menu_sign_out) {
+        if (id == R.id.main_menu_sign_out)
             signOut();
-        } else if (id == R.id.main_menu_bottom) {
-            Intent intent = new Intent(this, BottomNavActivity.class);
-            startActivity(intent);
-        }
+//        } else if (id == R.id.main_menu_bottom) {
+//            Intent intent = new Intent(this, BottomNavActivity.class);
+//            startActivity(intent);
+//        }
         return super.onOptionsItemSelected(item);
     }
 

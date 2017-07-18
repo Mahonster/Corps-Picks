@@ -65,7 +65,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 if (contest.isComplete().equals("true")) {
                     contestsAdapterInterface.startContestResults(contest);
                 } else {
-                    contestsAdapterInterface.startContestPick(contest);
+                    if (contest.isLocked()) {
+                        contestsAdapterInterface.startContestLineup(contest);
+                    } else {
+                        contestsAdapterInterface.startContestPick(contest);
+                    }
                 }
             }
         });
@@ -127,7 +131,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     interface ContestsAdapterInterface {
         void startContestPick(Contest contest);
-
         void startContestResults(Contest contest);
+
+        void startContestLineup(Contest contest);
     }
 }

@@ -22,6 +22,7 @@ public class Contest {
     private boolean contestPredicted = false;
     private String image = "";
     private int imageResourceId;
+    private boolean isLocked;
 
     public Contest() {
 
@@ -31,6 +32,14 @@ public class Contest {
         this.name = name;
         this.dateObject = date;
         this.location = location;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 
     public String isComplete() {

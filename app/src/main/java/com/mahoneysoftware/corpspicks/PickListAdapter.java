@@ -18,13 +18,13 @@ class PickListAdapter extends RecyclerView.Adapter<PickListAdapter.ViewHolder> {
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView corpsLabel;
         TextView placeLabel;
-        TextView scoreLabel;
+        //TextView scoreLabel;
         ImageView handleView;
         ViewHolder(View v) {
             super(v);
             corpsLabel = (TextView) v.findViewById(R.id.pick_list_corps_label);
             placeLabel = (TextView) v.findViewById(R.id.pick_list_place_label);
-            scoreLabel = (TextView) v.findViewById(R.id.pick_list_score_label);
+            //scoreLabel = (TextView) v.findViewById(R.id.pick_list_score_label);
             handleView = (ImageView) v.findViewById(R.id.pick_list_handle);
         }
     }
@@ -55,8 +55,8 @@ class PickListAdapter extends RecyclerView.Adapter<PickListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.corpsLabel.setText(dataSet[position]);
-        holder.placeLabel.setText("Place: " + (position + 1));
-        holder.scoreLabel.setText(scores[position]);
+        holder.placeLabel.setText("" + (position + 1));
+        //holder.scoreLabel.setText(scores[position]);
     }
 
     @Override

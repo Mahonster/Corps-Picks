@@ -112,6 +112,7 @@ public class PickActivity extends AppCompatActivity implements PickListAdapter.O
     public void submitPick() {
 
         if (user != null) {
+            Toast.makeText(this, "Submitting Pick!", Toast.LENGTH_SHORT).show();
             List<String> names = new ArrayList<>(Arrays.asList(dataSet));
             List<String> scoresList = new ArrayList<>(Arrays.asList(scores));
 
