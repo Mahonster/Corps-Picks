@@ -57,21 +57,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.d(TAG, "onAuthStateChanged:signed_out");
-//                }
-//                // ...
-//            }
-//        };
     }
 
     @Override
@@ -98,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 firebaseAuthWithGoogle(account);
                 progressDialog = ProgressDialog.show(LoginActivity.this, "Loading", "Please Wait", true);
             } else {
-                Toast.makeText(this, result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed with error code: " + result.getStatus().getStatusCode(), Toast.LENGTH_LONG).show();
             }
         }
     }

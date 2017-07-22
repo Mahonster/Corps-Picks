@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +36,8 @@ public class ResultActivity extends AppCompatActivity {
 
     private DatabaseReference mainReference;
     private FirebaseUser user;
+
+    TextView scoreLabel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +73,8 @@ public class ResultActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+
+        scoreLabel = (TextView) findViewById(R.id.activity_main_score_label);
 
         getResultsData();
     }
@@ -111,7 +116,9 @@ public class ResultActivity extends AppCompatActivity {
                     for (int i = 0; i < predictedCorps.length; i++) {
                         predictedCorps[i] = "No Pick";
                     }
+                    scoreLabel.setText("No prediction made.");
                 } else { // Load data from previous prediction if it exists
+                    updateScore();
                     GenericTypeIndicator<List<String>> t = new GenericTypeIndicator<List<String>>() {
                     };
                     List<String> corps = dataSnapshot.child("name").getValue(t);
@@ -122,6 +129,23 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 }
                 setupData();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    void updateScore() {
+        DatabaseReference scoreReference = mainReference.child("leaderboard").child("" + contestId).child("placement").child(userId).child("score");
+
+        scoreReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String score = (String) dataSnapshot.getValue();
+                scoreLabel.setText("Your Score: " + score);
             }
 
             @Override

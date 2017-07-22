@@ -6,58 +6,31 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
-        mAuth = FirebaseAuth.getInstance();
-
-//        FirebaseAuth.getInstance().signOut();
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             startMainActivity();
         } else {
             startLoginActivity();
         }
-
-
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    startMainActivity();
-//                    Log.d("CP_Firebase", "onAuthStateChanged:signed_in: " + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    startLoginActivity();
-//                    Log.d("CP_Firebase", "onAuthStateChanged:signed_out");
-//                }
-//            }
-//        };
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        mAuth.removeAuthStateListener(mAuthListener);
     }
 
     private void startMainActivity() {

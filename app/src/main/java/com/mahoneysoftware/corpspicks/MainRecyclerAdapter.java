@@ -65,7 +65,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
                 if (contest.isComplete().equals("true")) {
                     contestsAdapterInterface.startContestResults(contest);
                 } else {
-                    if (contest.isLocked()) {
+                    if (contest.isLocked().equals("true")) {
                         contestsAdapterInterface.startContestLineup(contest);
                     } else {
                         contestsAdapterInterface.startContestPick(contest);

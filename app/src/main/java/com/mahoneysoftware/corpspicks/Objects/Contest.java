@@ -22,7 +22,7 @@ public class Contest {
     private boolean contestPredicted = false;
     private String image = "";
     private int imageResourceId;
-    private boolean isLocked;
+    private String isLocked;
 
     public Contest() {
 
@@ -34,11 +34,11 @@ public class Contest {
         this.location = location;
     }
 
-    public boolean isLocked() {
+    public String isLocked() {
         return isLocked;
     }
 
-    public void setLocked(boolean locked) {
+    public void setLocked(String locked) {
         isLocked = locked;
     }
 

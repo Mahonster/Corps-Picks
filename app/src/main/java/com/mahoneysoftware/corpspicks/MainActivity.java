@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements MainRecyclerAdapt
                     contest.setId(id);
                     //contest.setImageResourceId(getContestImage(contest));
 
-                    boolean isLocked = (boolean) child.child("isLocked").getValue();
+                    String isLocked = (String) child.child("isLocked").getValue();
                     contest.setLocked(isLocked);
 
                     String isComplete = (String) child.child("isComplete").getValue();

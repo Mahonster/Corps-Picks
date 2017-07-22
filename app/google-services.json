@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "867542715344-1hajkr85ugs8hpulli83f6tmct4ntsvd.apps.googleusercontent.com",
+          "client_id": "867542715344-f96eivq5243vf2ohqfhun4sruch80728.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mahoneysoftware.corpspicks",
-            "certificate_hash": "FAA8A12C12C815F262CB2E460EE1CA16E0B390A2"
+            "certificate_hash": "faa8a12c12c815f262cb2e460ee1ca16e0b390a2"
+          }
+        },
+        {
+          "client_id": "867542715344-9bbe2ng4ve3adgag24pggpkl9a9edvb2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mahoneysoftware.corpspicks",
+            "certificate_hash": "1050a6170069972bc8d121ed08c837ec882278cc"
           }
         },
         {
@@ -42,6 +50,13 @@
             {
               "client_id": "867542715344-srha7e2k1o46vmhr40r4c70s8a5rbecg.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "867542715344-q3nellpdu801kug0doa1umd178p4cc8p.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.TimIos.CorpsPicks"
+              }
             }
           ]
         },
